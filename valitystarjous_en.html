@@ -130,6 +130,43 @@ select.asel option{background:var(--midnight-dark);color:white;}
 .fstrip{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--midnight-dark) 0%,var(--midnight) 40%,var(--warm) 70%,var(--dusty) 100%);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 .pnum{position:absolute;bottom:12px;right:52px;font-size:9px;color:var(--light-gray);}
 
+
+@media screen and (max-width: 820px) {
+  body{padding:0 0 40px!important;background:#f0f2f5!important;}
+  .toolbar{padding:8px 14px;flex-wrap:wrap;gap:6px;}
+  .toolbar-title{font-size:11px;width:100%;}
+  .tbtn{width:100%;justify-content:flex-start;flex-wrap:wrap;}
+  .btn{font-size:11px;padding:6px 12px;}
+  select.asel{font-size:11px;}
+  .page{margin:0 0 12px!important;border-radius:0;box-shadow:none!important;min-height:auto!important;}
+  .cover-top{padding:28px 20px 28px!important;min-height:360px!important;}
+  .cover-title{font-size:28px!important;}
+  .cover-bottom{padding:20px 20px 24px!important;grid-template-columns:1fr!important;gap:14px!important;}
+  .cf{grid-column:auto!important;}
+  .ph{padding:18px 20px 12px!important;}
+  .pb{padding:0 20px 28px!important;}
+  .sgrid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .cgrid{grid-template-columns:1fr!important;}
+  .pillars{grid-template-columns:1fr!important;gap:8px!important;}
+  .tgrid{grid-template-columns:1fr!important;}
+  .price-hero{flex-direction:column!important;gap:12px!important;padding:18px 18px!important;}
+  .ph-right{text-align:left!important;}
+  .ph-right input{width:100%!important;text-align:left!important;}
+  .price-hero input{width:100%!important;font-size:24px!important;}
+  .alue-dots{flex-wrap:wrap!important;gap:8px!important;}
+  .alue-line{display:none!important;}
+  .agent-single{flex-direction:row!important;align-items:flex-start!important;}
+  .agent-cover{flex-direction:row!important;}
+  .stitle{font-size:20px!important;}
+  #analyysi-kortti > div[style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr 1fr!important;}
+}
+@media screen and (max-width: 480px) {
+  .cover-title{font-size:22px!important;}
+  .stitle{font-size:18px!important;}
+  .sgrid{grid-template-columns:1fr!important;}
+  .price-hero input{font-size:20px!important;}
+}
+
 @media print{
   body{background:white!important;padding:0!important;}
   .toolbar{display:none!important;}
@@ -503,6 +540,31 @@ const d = new Date();
 document.getElementById('pvm').value = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
 
 selectAgent('tanja');
+
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.has('hinta') || p.has('osoite')) {
+    const d = {
+      hinta:      p.get('hinta')      || '',
+      haarukka:   p.get('haarukka')   || '',
+      eurm2:      p.get('eurm2')      || '',
+      kohde_eurm2:p.get('kohde_eurm2')|| '',
+      alue:       p.get('alue')       || '',
+      vertailu:   p.get('vertailu')   || '',
+      osoite:     p.get('osoite')     || '',
+      koko:       p.get('koko')       || '',
+      kunto:      p.get('kunto')      || '',
+      sijainti:   p.get('sijainti')   || '',
+      kohdetyyppi:p.get('kohdetyyppi')|| '',
+      rakvuosi:   p.get('rakvuosi')   || '',
+      trendi:     p.get('trendi')     || '',
+      analyysi:   p.get('analyysi')   || '',
+      nostaa:     p.get('nostaa')     || '',
+      laskee:     p.get('laskee')     || '',
+    };
+    taytetaData(d);
+  }
+})();
 </script>
 </body>
 </html>
