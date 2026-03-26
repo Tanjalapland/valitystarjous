@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lapland LKV — Välitystarjous</title>
+<style>
+:root{
+  --midnight:#3E547F; --midnight-dark:#2d3f5e; --midnight-light:#f0f3f8;
+  --dusty:#E7B4B0; --warm:#cc8a7f; --arctic:#A9B7D4; --mist:#D9DDE6;
+  --snow:#F4F5F7; --charcoal:#222; --mid:#555; --light-gray:#888;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:#dde1ea;color:var(--charcoal);padding:70px 20px 60px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+
+/* TOOLBAR */
+.toolbar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--midnight-dark);color:white;display:flex;align-items:center;justify-content:space-between;padding:10px 22px;box-shadow:0 2px 12px rgba(0,0,0,.3);gap:10px;}
+.toolbar-title{font-size:12px;font-weight:500;opacity:.8;}
+.tbtn{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.btn{padding:7px 15px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:var(--sans);}
+.btn-print{background:var(--warm);color:white;} .btn-print:hover{background:#b8766b;}
+.btn-ghost{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);}
+select.asel{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:5px;font-size:11px;font-family:var(--sans);cursor:pointer;outline:none;}
+select.asel option{background:var(--midnight-dark);color:white;}
+
+/* PAGES */
+.page{background:white;width:100%;max-width:794px;margin:0 auto 22px;min-height:1123px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(62,84,127,.15);}
+
+/* KANSILEHTI */
+.cover-top{background:linear-gradient(160deg,var(--midnight-dark) 0%,var(--midnight) 60%,#5a6e9a 100%);padding:52px 56px 44px;display:flex;flex-direction:column;justify-content:space-between;min-height:530px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.cover-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--arctic);font-weight:600;margin-bottom:14px;}
+.cover-title{font-family:var(--serif);font-size:42px;font-weight:700;color:white;line-height:1.12;}
+.cover-tagline{font-size:13px;color:rgba(255,255,255,.55);font-style:italic;margin-top:10px;}
+.cover-divider{height:3px;background:linear-gradient(90deg,var(--midnight-dark) 0%,var(--midnight) 40%,var(--warm) 70%,var(--dusty) 100%);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.cover-bottom{padding:30px 56px 36px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.cf label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--light-gray);font-weight:600;display:block;margin-bottom:5px;}
+.cf input{font-size:13px;font-weight:500;color:var(--charcoal);border:none;border-bottom:1.5px solid var(--mist);padding:4px 0;width:100%;background:transparent;outline:none;font-family:var(--sans);}
+.cf input:focus{border-bottom-color:var(--midnight);}
+.cf input::placeholder{color:#ccc;}
+.agent-cover{display:flex;align-items:center;gap:14px;background:var(--midnight-light);border-radius:10px;padding:14px 17px;margin-top:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+
+/* PAGE HEADER */
+.ph{padding:24px 52px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--mist);margin-bottom:24px;}
+.ph-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--light-gray);font-weight:600;}
+.pb{padding:0 52px 40px;}
+.stag{display:inline-block;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:3px;margin-bottom:12px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.stag.mn{background:var(--midnight);color:white;}
+.stag.r{background:var(--warm);color:white;}
+.stag.a{background:var(--arctic);color:var(--midnight-dark);}
+.stitle{font-family:var(--serif);font-size:25px;font-weight:700;color:var(--midnight-dark);margin-bottom:8px;line-height:1.15;}
+.sintro{font-size:12.5px;color:var(--mid);line-height:1.7;margin-bottom:22px;font-weight:400;}
+
+/* HINTA */
+.hint-box{font-size:11px;color:#5a6e9a;background:rgba(62,84,127,.07);border:1px dashed #a9b7d4;border-radius:6px;padding:8px 12px;margin-bottom:14px;}
+.price-hero{background:linear-gradient(135deg,var(--midnight-dark) 0%,var(--midnight) 100%);border-radius:12px;padding:22px 26px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.ph-label2{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--arctic);font-weight:600;margin-bottom:4px;}
+.price-hero input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.3);color:white;font-family:var(--serif);font-size:28px;font-weight:700;width:230px;outline:none;}
+.price-hero .sub input{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:11.5px;width:240px;outline:none;margin-top:3px;font-family:var(--sans);}
+.ph-right{text-align:right;}
+.ph-right .sl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--arctic);font-weight:600;}
+.ph-right input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.3);color:white;font-size:17px;font-weight:700;width:125px;outline:none;text-align:right;font-family:var(--sans);}
+.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
+.sc{background:var(--midnight-light);border-radius:8px;padding:12px 14px;border-left:3px solid var(--midnight);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.sc .sl{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--midnight);font-weight:600;margin-bottom:4px;}
+.sc input{border:none;background:transparent;font-size:14px;font-weight:700;color:var(--midnight-dark);width:100%;outline:none;font-family:var(--sans);}
+.sc .ss{font-size:10px;color:var(--light-gray);margin-top:2px;}
+
+/* CBOX */
+.cbox{background:var(--snow);border:1px solid var(--mist);border-radius:8px;padding:14px 17px;margin-bottom:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.cbox .cl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--midnight);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.cbox .cl::after{content:'';flex:1;height:1px;background:var(--mist);}
+.cbox textarea{width:100%;border:none;background:transparent;outline:none;resize:none;font-family:var(--sans);font-size:12.5px;color:var(--charcoal);line-height:1.7;min-height:65px;overflow:hidden;}
+.cbox textarea::placeholder{color:#bbb;font-style:italic;}
+
+/* CHANNELS */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.cc{border:1px solid var(--mist);border-radius:10px;padding:13px 14px;display:flex;align-items:flex-start;gap:10px;}
+.ci{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.ci.b{background:var(--midnight-light);} .ci.r{background:#fff0ef;}
+.cc h4{font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:2px;}
+.cc p{font-size:11px;color:var(--light-gray);line-height:1.5;}
+
+/* KOHDERYHMÄ */
+.target-box{background:linear-gradient(135deg,#fff8f7 0%,#f0f3f8 100%);border:1px solid var(--mist);border-radius:10px;padding:16px 18px;margin-bottom:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.target-box h4{font-size:11px;font-weight:700;color:var(--midnight-dark);margin-bottom:10px;}
+.target-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.ttag{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;background:white;border:1.5px solid var(--mist);color:var(--mid);cursor:pointer;transition:all .15s;user-select:none;}
+.ttag.active{background:var(--midnight);color:white;border-color:var(--midnight);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.target-note{font-size:10px;color:var(--light-gray);font-style:italic;margin-bottom:8px;}
+.target-custom textarea{width:100%;border:none;border-bottom:1px solid var(--mist);background:transparent;outline:none;resize:none;font-family:var(--sans);font-size:12px;color:var(--charcoal);line-height:1.6;min-height:32px;overflow:hidden;padding:4px 0;}
+.target-custom textarea::placeholder{color:#ccc;font-style:italic;}
+
+/* ABOUT */
+.pillars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:20px;}
+.pillar{text-align:center;padding:16px 10px;background:var(--snow);border-radius:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.pillar .pi{font-size:22px;margin-bottom:6px;}
+.pillar h4{font-family:var(--serif);font-size:12.5px;color:var(--midnight-dark);margin-bottom:4px;}
+.pillar p{font-size:11px;color:var(--light-gray);line-height:1.5;}
+.qb{border-left:3px solid var(--warm);padding:13px 16px;background:var(--snow);border-radius:0 8px 8px 0;margin-bottom:18px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.qb p{font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--midnight-dark);line-height:1.6;}
+.qb cite{font-size:10px;color:var(--light-gray);margin-top:4px;display:block;font-style:normal;}
+.divider{height:1px;background:var(--mist);margin:0 0 18px;}
+
+/* ALUE-BANNERI */
+.alue-banner{background:linear-gradient(135deg,var(--midnight-dark) 0%,var(--midnight) 100%);border-radius:12px;padding:20px 24px;margin-bottom:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.alue-banner .ab-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--arctic);font-weight:600;margin-bottom:12px;}
+.alue-dots{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-bottom:10px;}
+.alue-dot{display:flex;align-items:center;gap:7px;}
+.alue-dot .dot{width:7px;height:7px;border-radius:50%;background:var(--warm);flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.alue-dot .name{font-size:12.5px;font-weight:500;color:white;}
+.alue-line{width:22px;height:1px;background:rgba(255,255,255,.25);flex-shrink:0;}
+.alue-sub{font-size:11px;color:rgba(255,255,255,.6);line-height:1.6;}
+
+/* VÄLITTÄJÄ */
+.agent-single{border:2px solid var(--midnight);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:15px;background:var(--midnight-light);margin-bottom:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.agent-single .abn{font-size:14px;font-weight:600;color:var(--midnight-dark);}
+.agent-single .abt{font-size:10.5px;color:var(--light-gray);margin-top:1px;}
+.agent-single .abcc{font-size:11px;color:var(--mid);margin-top:5px;line-height:1.7;}
+
+/* SIVU 5 */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.ti label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--light-gray);font-weight:600;display:block;margin-bottom:5px;}
+.ti input{border:none;border-bottom:1.5px solid var(--mist);padding:4px 0;font-size:13px;font-weight:500;color:var(--charcoal);width:100%;outline:none;background:transparent;font-family:var(--sans);}
+.ti input:focus{border-bottom-color:var(--midnight);}
+.ti input::placeholder{color:#ccc;}
+
+/* FOOTER */
+.fstrip{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--midnight-dark) 0%,var(--midnight) 40%,var(--warm) 70%,var(--dusty) 100%);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.pnum{position:absolute;bottom:12px;right:52px;font-size:9px;color:var(--light-gray);}
+
+@media print{
+  body{background:white!important;padding:0!important;}
+  .toolbar{display:none!important;}
+  .hint-box{display:none!important;}
+  .target-note{display:none!important;}
+  .ttag:not(.active){display:none!important;}
+  .page{box-shadow:none!important;margin:0!important;page-break-after:always;max-width:none!important;}
+  .page:last-child{page-break-after:auto;}
+  input{border-bottom-color:#ddd!important;}
+  textarea{overflow:visible!important;height:auto!important;white-space:pre-wrap!important;}
+  .cbox{page-break-inside:avoid;}
+  @page{margin:0;size:A4;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <span class="toolbar-title">Lapland LKV — Välitystarjous · Muokattava pohja</span>
+  <div class="tbtn">
+    <button class="btn-lang" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.25);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;" onclick="window.location.href='valitystarjous_en.html'">🇬🇧 English</button>
+    <label style="font-size:11px;opacity:.7;color:white">Välittäjä:</label>
+    <select class="asel" id="agent-select" onchange="selectAgent(this.value)">
+      <option value="tanja">Tanja Sotka</option>
+      <option value="juha">Juha Komulainen</option>
+      <option value="saku">Saku Häkkinen</option>
+    </select>
+    <button class="btn btn-ghost" onclick="haeHinnoittelu()">📊 Hae hinnoittelutyökalusta</button>
+    <button class="btn btn-print" onclick="window.print()">🖨 Tulosta / PDF</button>
+  </div>
+</div>
+
+<!-- LOGO SVG (inline, toimii aina) -->
+<svg id="logo-cover" style="display:none" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="lg-w" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#a9b7d4"/><stop offset="50%" style="stop-color:#e7b4b0"/><stop offset="100%" style="stop-color:#d99c96"/></linearGradient></defs>
+  <g transform="translate(150,80)"><g fill="none" stroke="url(#lg-w)" stroke-width="4" stroke-linecap="round"><path d="M-55,20 C-45,-40 0,-75 55,20"/><path d="M-20,20 C-15,0 0,-15 20,20"/><circle cx="0" cy="10" r="4" fill="url(#lg-w)" stroke="none"/></g>
+  <g transform="translate(0,65)" text-anchor="middle"><text x="0" y="0" fill="white" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="3">LAPLAND</text><text x="0" y="28" fill="#d99c96" font-family="Georgia,serif" font-size="15" font-weight="600" letter-spacing="5">LKV</text></g></g>
+</svg>
+
+<!-- ══ SIVU 1: KANSILEHTI ══ -->
+<div class="page">
+  <div class="cover-top">
+    <svg height="55" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lc" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#a9b7d4"/><stop offset="50%" style="stop-color:#e7b4b0"/><stop offset="100%" style="stop-color:#d99c96"/></linearGradient></defs><g transform="translate(150,80)"><g fill="none" stroke="url(#lc)" stroke-width="4" stroke-linecap="round"><path d="M-55,20 C-45,-40 0,-75 55,20"/><path d="M-20,20 C-15,0 0,-15 20,20"/><circle cx="0" cy="10" r="4" fill="url(#lc)" stroke="none"/></g><g transform="translate(0,65)" text-anchor="middle"><text x="0" y="0" fill="white" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="3">LAPLAND</text><text x="0" y="28" fill="#d99c96" font-family="Georgia,serif" font-size="15" font-weight="600" letter-spacing="5">LKV</text></g></g></svg>
+    <div>
+      <div class="cover-label">Kiinteistönvälitystarjous</div>
+      <div class="cover-title">Asiantunteva kumppani<br>Lapin markkinoilla</div>
+      <div class="cover-tagline"><em>Real Estate with Heart</em></div>
+    </div>
+  </div>
+  <div class="cover-divider"></div>
+  <div class="cover-bottom">
+    <div class="cf"><label>Kohteen osoite</label><input id="f-osoite" type="text" placeholder="esim. Tunturitie 4, 99130 Levi"></div>
+    <div class="cf"><label>Päivämäärä</label><input type="text" id="pvm"></div>
+    <div class="cf"><label>Myyjän nimi</label><input type="text" placeholder="Etunimi Sukunimi"></div>
+    <div class="cf" style="grid-column:1/-1"><label>Välittäjä</label><div class="agent-cover" id="cover-agent"></div></div>
+  </div>
+  <div class="fstrip"></div>
+</div>
+
+<!-- ══ SIVU 2: HINTA-ARVIO ══ -->
+<div class="page">
+  <div class="ph">
+    <svg height="28" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ls2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8fa1b9"/><stop offset="50%" style="stop-color:#d4aeb8"/><stop offset="100%" style="stop-color:#cc8a7f"/></linearGradient></defs><g transform="translate(150,80)"><g fill="none" stroke="url(#ls2)" stroke-width="4" stroke-linecap="round"><path d="M-55,20 C-45,-40 0,-75 55,20"/><path d="M-20,20 C-15,0 0,-15 20,20"/><circle cx="0" cy="10" r="4" fill="url(#ls2)" stroke="none"/></g><g transform="translate(0,65)" text-anchor="middle"><text x="0" y="0" fill="#2c2c2c" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="3">LAPLAND</text><text x="0" y="28" fill="#cc8a7f" font-family="Georgia,serif" font-size="15" font-weight="600" letter-spacing="5">LKV</text></g></g></svg>
+    <span class="ph-label">Hinta-arvio ja markkinatilanne</span>
+  </div>
+  <div class="pb">
+    <div class="stag mn">Markkinadata · Lapland LKV</div>
+    <div class="stitle">Kohteen hinta-arvio<br>ja markkinatilanne</div>
+    <div class="sintro">Hinta-arvio perustuu Lapland LKV:n sisäiseen markkinadataan, joka kattaa yli 2 000 toteutunutta kauppaa ja hinnastokohdetta vuosilta 2023–2026 Levin, Ylläksen, Äkäslompolon ja Rovaniemen alueelta.</div>
+    <div class="hint-box" id="data-hint">💡 Paina <strong>"📊 Hae hinnoittelutyökalusta"</strong> yläpalkissa — tai täytä tiedot käsin.</div>
+
+    <!-- ANALYYSIKORTTI — näkyy kun data haettu hinnoittelutyökalusta -->
+    <div id="analyysi-kortti" style="display:none;background:var(--midnight-light);border:1.5px solid var(--arctic);border-radius:10px;padding:16px 20px;margin-bottom:18px;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--midnight);font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span>Hinnoittelun perusteet</span>
+        <span id="a-trendi" style="font-size:10px;font-weight:600;color:var(--midnight);background:white;padding:2px 10px;border-radius:20px;border:1px solid var(--mist);"></span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;">
+        <div style="background:white;border-radius:7px;padding:10px 12px;border:1px solid var(--mist);">
+          <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--light-gray);font-weight:600;margin-bottom:3px;">Kohde</div>
+          <div id="a-koko" style="font-size:13px;font-weight:700;color:var(--midnight-dark);">—</div>
+        </div>
+        <div style="background:white;border-radius:7px;padding:10px 12px;border:1px solid var(--mist);">
+          <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--light-gray);font-weight:600;margin-bottom:3px;">Kunto</div>
+          <div id="a-kunto" style="font-size:13px;font-weight:700;color:var(--midnight-dark);">—</div>
+        </div>
+        <div style="background:white;border-radius:7px;padding:10px 12px;border:1px solid var(--mist);">
+          <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--light-gray);font-weight:600;margin-bottom:3px;">Sijainti</div>
+          <div id="a-sijainti" style="font-size:13px;font-weight:700;color:var(--midnight-dark);">—</div>
+        </div>
+        <div style="background:white;border-radius:7px;padding:10px 12px;border:1px solid var(--mist);">
+          <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--light-gray);font-weight:600;margin-bottom:3px;">Korjattu €/m²</div>
+          <div id="a-eurm2-kohde" style="font-size:13px;font-weight:700;color:var(--midnight-dark);">—</div>
+        </div>
+      </div>
+      <div id="a-analyysi-teksti" style="font-size:11.5px;color:var(--mid);line-height:1.7;margin-bottom:8px;padding:10px 14px;background:white;border-radius:7px;border:1px solid var(--mist);font-style:italic;"></div>
+      <div id="a-tekijat" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#f0fff4;border:1px solid #a8d5b5;border-radius:7px;padding:10px 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+          <div style="font-size:9px;font-weight:700;color:#2e7d32;margin-bottom:4px;">↑ NOSTAA HINTAA</div>
+          <div id="a-nostaa" style="font-size:11.5px;color:#1b5e20;line-height:1.6;"></div>
+        </div>
+        <div style="background:#fff5f5;border:1px solid #f5b8b8;border-radius:7px;padding:10px 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+          <div style="font-size:9px;font-weight:700;color:#c62828;margin-bottom:4px;">↓ LASKEE HINTAA</div>
+          <div id="a-laskee" style="font-size:11.5px;color:#b71c1c;line-height:1.6;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-hero">
+      <div>
+        <div class="ph-label2">Arvioitu velaton hinta</div>
+        <div><input id="f-hinta" placeholder="esim. 450 000 €"></div>
+        <div class="sub"><input id="f-haarukka" placeholder="Haarukka: esim. 420 000 – 480 000 €"></div>
+      </div>
+      <div class="ph-right"><div class="sl">€ / m²</div><input id="f-eurm2" placeholder="5 800 €/m²"></div>
+    </div>
+    <div class="sgrid">
+      <div class="sc"><div class="sl">Alue</div><input id="f-alue" placeholder="Levi / Kittilä"><div class="ss">Markkinointialue</div></div>
+      <div class="sc"><div class="sl">Vertailukohteet</div><input id="f-vertailu" placeholder="esim. 24 kpl"><div class="ss">Vastaavat kohteet alueella</div></div>
+      <div class="sc"><div class="sl">Mediaani €/m²</div><input id="f-mediaani" placeholder="esim. 5 650 €/m²"><div class="ss">Alueen mediaani 2023–2026</div></div>
+    </div>
+    <div class="cbox"><div class="cl">Välittäjän kommentit kohteesta</div><textarea placeholder="Kirjoita kohteen erityispiirteet, sijainnin edut ja myyntiargumentit..."></textarea></div>
+    <div class="cbox"><div class="cl">Markkinanäkymät alueella</div><textarea>Lapland LKV:n markkinakatsauksen mukaan Lapin vapaa-ajan kiinteistöjen kysyntä on pysynyt vakaana ja vahvana. Kansainvälisten ostajien osuus on kasvanut merkittävästi — etenkin saksalaiset, sveitsiläiset ja beneluximaiden ostajat ovat aktiivisia Levin ja Ylläksen markkinoilla. Uudiskohteissa velaton hinta on noussut noin 8–12 % viimeisten kahden vuoden aikana. Arktinen luonto, laadukkaat laskettelurinteet ja Suomen turvallisuus pitävät kysynnän vahvana myös jatkossa.</textarea></div>
+  </div>
+  <div class="fstrip"></div><div class="pnum">2 / 5</div>
+</div>
+
+<!-- ══ SIVU 3: MARKKINOINTI ══ -->
+<div class="page">
+  <div class="ph">
+    <svg height="28" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ls3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8fa1b9"/><stop offset="50%" style="stop-color:#d4aeb8"/><stop offset="100%" style="stop-color:#cc8a7f"/></linearGradient></defs><g transform="translate(150,80)"><g fill="none" stroke="url(#ls3)" stroke-width="4" stroke-linecap="round"><path d="M-55,20 C-45,-40 0,-75 55,20"/><path d="M-20,20 C-15,0 0,-15 20,20"/><circle cx="0" cy="10" r="4" fill="url(#ls3)" stroke="none"/></g><g transform="translate(0,65)" text-anchor="middle"><text x="0" y="0" fill="#2c2c2c" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="3">LAPLAND</text><text x="0" y="28" fill="#cc8a7f" font-family="Georgia,serif" font-size="15" font-weight="600" letter-spacing="5">LKV</text></g></g></svg>
+    <span class="ph-label">Markkinointisuunnitelma</span>
+  </div>
+  <div class="pb">
+    <div class="stag r">Markkinointi</div>
+    <div class="stitle">Kohdettanne markkinoidaan<br>kotimaassa ja kansainvälisesti</div>
+    <div class="sintro">Lapland LKV tavoittaa ostajat siellä, missä he etsivät — suomalaisilla portaaleilla sekä kansainvälisillä alustoilla yli 60 maassa.</div>
+    <div class="cgrid">
+      <div class="cc"><div class="ci b">🏠</div><div><h4>Etuovi.com & Oikotie.fi</h4><p>Suomen suurimmat kiinteistöportaalit. Premium-sijoitus koko toimeksiannon ajan.</p></div></div>
+      <div class="cc"><div class="ci r">🌍</div><div><h4>JamesEdition</h4><p>Kansainvälinen luksuskiinteistöalusta. Varakas ostaja Euroopasta ja Aasiasta.</p></div></div>
+      <div class="cc"><div class="ci r">🌐</div><div><h4>Properstar — 60+ maata</h4><p>Kiinteistösyöte yli 60 maan portaaleihin samanaikaisesti.</p></div></div>
+      <div class="cc"><div class="ci b">📱</div><div><h4>Instagram & Facebook</h4><p>Kohdennettu some-markkinointi kansainväliselle yleisölle.</p></div></div>
+      <div class="cc"><div class="ci b">💬</div><div><h4>WhatsApp-katalogit</h4><p>Lapland LKV:n aktiiviset ostajalistat. Henkilökohtainen esittely.</p></div></div>
+      <div class="cc"><div class="ci r">📸</div><div><h4>Ammattilaiskuvaus & video</h4><p>Laadukkaat kuvat ja esittelyvideo. Droonekuvaus tarvittaessa.</p></div></div>
+      <div class="cc" style="grid-column:1/-1;background:var(--midnight-light);border-color:var(--arctic);"><div class="ci b">🤝</div><div><h4>Linear Insider — Ammattilaisverkosto</h4><p>Suljettu markkinapaikka varmennetuille kiinteistönvälittäjille. Kohde tavoittaa kansalliset ja kansainväliset kollegat hakuvahtien kautta — myös hiljainen myynti mahdollista. Ostajatiedot pysyvät anonyymeinä.</p></div></div>
+    </div>
+
+    <!-- KOHDERYHMÄ: aktivoitavat tägit + vapaa tekstikenttä -->
+    <div class="target-box">
+      <h4>Kohderyhmä</h4>
+      <div class="target-note">Klikkaa aktivoidaksesi kohderyhmän — tai kirjoita oma alla olevaan kenttään.</div>
+      <div class="target-tags">
+        <span class="ttag active" onclick="toggleTag(this)">Suomalaiset vapaa-ajanasunnon ostajat</span>
+        <span class="ttag active" onclick="toggleTag(this)">Saksalaiset & itävaltalaiset</span>
+        <span class="ttag active" onclick="toggleTag(this)">Sveitsiläiset ostajat</span>
+        <span class="ttag" onclick="toggleTag(this)">Benelux-maat</span>
+        <span class="ttag" onclick="toggleTag(this)">Skandinavia</span>
+        <span class="ttag" onclick="toggleTag(this)">Kiinteistösijoittajat</span>
+        <span class="ttag" onclick="toggleTag(this)">Kansainväliset luksusostajat</span>
+        <span class="ttag" onclick="toggleTag(this)">Pohjoismaiset ostajat</span>
+      </div>
+      <div class="target-custom" style="margin-top:10px;">
+        <textarea placeholder="Lisätietoa kohderyhmästä tai muu tarkenne..."></textarea>
+      </div>
+    </div>
+
+    <div class="cbox"><div class="cl">Kohdekohtainen markkinointisuunnitelma</div><textarea placeholder="Lisää kohdekohtainen suunnitelma: kuvauspäivä, julkaisuaikataulu, erityistoimenpiteet..."></textarea></div>
+  </div>
+  <div class="fstrip"></div><div class="pnum">3 / 5</div>
+</div>
+
+<!-- ══ SIVU 4: LAPLAND LKV ══ -->
+<div class="page">
+  <div class="ph">
+    <svg height="28" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ls4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8fa1b9"/><stop offset="50%" style="stop-color:#d4aeb8"/><stop offset="100%" style="stop-color:#cc8a7f"/></linearGradient></defs><g transform="translate(150,80)"><g fill="none" stroke="url(#ls4)" stroke-width="4" stroke-linecap="round"><path d="M-55,20 C-45,-40 0,-75 55,20"/><path d="M-20,20 C-15,0 0,-15 20,20"/><circle cx="0" cy="10" r="4" fill="url(#ls4)" stroke="none"/></g><g transform="translate(0,65)" text-anchor="middle"><text x="0" y="0" fill="#2c2c2c" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="3">LAPLAND</text><text x="0" y="28" fill="#cc8a7f" font-family="Georgia,serif" font-size="15" font-weight="600" letter-spacing="5">LKV</text></g></g></svg>
+    <span class="ph-label">Miksi Lapland LKV?</span>
+  </div>
+  <div class="pb">
+    <div class="stag a">Lapland LKV Oy</div>
+    <div class="stitle">Lapin kiinteistömarkkinoiden<br>paras tuntija</div>
+    <div class="sintro">Lapland LKV on Lapissa toimiva kiinteistönvälitysyritys, joka tuntee alueen markkinan ja osaa esittää kohteet selkeästi, rehellisesti ja ilman liioittelua. Palvelemme sekä kotimaisia että kansainvälisiä ostajia — ja erityisesti ulkomaisille asiakkaille selitämme suomalaisen prosessin ymmärrettävässä muodossa. Emme ole suurin toimija, mutta teemme asiat huolellisesti ja pidämme kokonaisuuden hallinnassa.</div>
+    <div class="pillars">
+      <div class="pillar"><div class="pi">🏔</div><h4>Lapin tuntemus</h4><p>Asumme ja työskentelemme Lapissa. Tunnemme markkinat, kunnat ja ostajaprofiilit kuin omat taskumme.</p></div>
+      <div class="pillar"><div class="pi">🌍</div><h4>Kansainvälinen verkosto</h4><p>Aktiiviset yhteydet eurooppalaisiin ostajiin. Kokemusta kansainvälisten kauppojen läpiviemisestä.</p></div>
+      <div class="pillar"><div class="pi">✦</div><h4>Boutique-palvelu</h4><p>Pieni toimisto — henkilökohtainen palvelu. Yksi välittäjä, yksi vastuu. Aina tiedätte kenelle soittaa.</p></div>
+    </div>
+    <div class="divider"></div>
+    <div class="qb">
+      <p>"Neljä vuotta sitten muutin Helsingistä Lappiin löytääkseni ympäristön, jossa voin olla aito itseni. Tänään välitän kohteiden lisäksi myös Lapin elämäntapaa — ja uskon, että se näkyy tavassa tehdä tätä työtä."</p>
+      <cite>— Tanja Sotka, Lapland LKV Oy</cite>
+    </div>
+
+    <!-- TOIMINTA-ALUE -->
+    <div class="alue-banner">
+      <div class="ab-label">Toiminta-alueemme</div>
+      <div class="alue-dots">
+        <div class="alue-dot"><div class="dot"></div><span class="name">Rovaniemi</span></div>
+        <div class="alue-line"></div>
+        <div class="alue-dot"><div class="dot"></div><span class="name">Levi</span></div>
+        <div class="alue-line"></div>
+        <div class="alue-dot"><div class="dot"></div><span class="name">Ylläs</span></div>
+        <div class="alue-line"></div>
+        <div class="alue-dot"><div class="dot"></div><span class="name">Saariselkä</span></div>
+        <div class="alue-line"></div>
+        <div class="alue-dot"><div class="dot"></div><span class="name">Inari</span></div>
+        <div class="alue-line"></div>
+        <div class="alue-dot"><div class="dot"></div><span class="name">Utsjoki</span></div>
+      </div>
+      <div class="alue-sub">Välitämme kiinteistöjä koko Lapin alueella — tunturikeskuksista pohjoisimpaan Suomeen.<br>Kansainvälinen markkinointimme tavoittaa ostajat yli 60 maasta.</div>
+    </div>
+
+    <div style="font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--midnight);font-weight:700;margin-bottom:10px;">Välittäjänne</div>
+    <div class="agent-single" id="agent-big"></div>
+    <div class="cbox"><div class="cl">Referenssejä ja ajankohtaista</div>
+      <textarea>Lapland LKV on ollut esillä mm. Kauppalehdessä, Ilta-Sanomissa ja Talouselämässä. Olemme välittäneet menestyksekkäästi useita kansainvälisiä kauppoja vuosina 2023–2025, mukaan lukien saksalaisille, sveitsiläisille ja pohjoismaisille ostajille.</textarea>
+    </div>
+  </div>
+  <div class="fstrip"></div><div class="pnum">4 / 5</div>
+</div>
+
+<!-- ══ SIVU 5: TOIMEKSIANTO (ei allekirjoitusta) ══ -->
+<div class="page">
+  <div class="ph">
+    <svg height="28" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ls5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8fa1b9"/><stop offset="50%" style="stop-color:#d4aeb8"/><stop offset="100%" style="stop-color:#cc8a7f"/></linearGradient></defs><g transform="translate(150,80)"><g fill="none" stroke="url(#ls5)" stroke-width="4" stroke-linecap="round"><path d="M-55,20 C-45,-40 0,-75 55,20"/><path d="M-20,20 C-15,0 0,-15 20,20"/><circle cx="0" cy="10" r="4" fill="url(#ls5)" stroke="none"/></g><g transform="translate(0,65)" text-anchor="middle"><text x="0" y="0" fill="#2c2c2c" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="3">LAPLAND</text><text x="0" y="28" fill="#cc8a7f" font-family="Georgia,serif" font-size="15" font-weight="600" letter-spacing="5">LKV</text></g></g></svg>
+    <span class="ph-label">Toimeksiantoehdot</span>
+  </div>
+  <div class="pb">
+    <div class="stag mn">Toimeksianto</div>
+    <div class="stitle">Välitystoimeksiantoehdot</div>
+    <div class="sintro">Tämä välitysehdotus kuvaa Lapland LKV:n tarjoamat palvelut ja ehdot. Varsinainen toimeksiantosopimus tehdään erikseen kirjallisesti kiinteistönvälityslain (1074/2000) mukaisesti.</div>
+
+    <!-- VOIMASSAOLO -->
+    <div style="background:var(--midnight-light);border:2px solid var(--midnight);border-radius:10px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <span style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--midnight);font-weight:700;white-space:nowrap;">Välitysehdotus voimassa:</span>
+      <input style="border:none;background:transparent;font-size:13.5px;font-weight:500;color:var(--charcoal);outline:none;flex:1;font-family:var(--sans);" placeholder="xx.xx.xxxx saakka">
+    </div>
+
+    <div class="tgrid">
+      <div class="ti"><label>Välityspalkkio</label><input type="text" placeholder="esim. 3 % velattomasta hinnasta + alv 25,5 %"></div>
+      <div class="ti"><label>Toimeksiantosopimuksen kesto</label><input type="text" value="4 kuukautta"></div>
+      <div class="ti"><label>Toimeksiantaja (myyjä)</label><input type="text" placeholder="Nimi / Y-tunnus"></div>
+      <div class="ti"><label>Pyyntöhinta (alustava)</label><input id="f-pyynto" type="text" placeholder="esim. 450 000 €"></div>
+      <div class="ti"><label>Kohteen osoite</label><input id="f-osoite2" type="text" placeholder="Täytetään automaattisesti"></div>
+      <div class="ti"><label>Välittäjä</label><input id="fi-agent" type="text" placeholder="Nimi · puhelin · sähköposti"></div>
+    </div>
+    <div class="cbox"><div class="cl">Erityisehdot ja lisätiedot</div>
+      <textarea placeholder="Mahdolliset erityisehdot, esim. vapautumisajankohta, vuokrasopimukset, muut sovitut asiat..."></textarea>
+    </div>
+    <div style="margin-top:24px;padding:14px 18px;background:var(--snow);border-radius:8px;border:1px solid var(--mist);text-align:center;">
+      <p style="font-size:10px;color:var(--light-gray);line-height:1.8;">Lapland LKV Oy · Y-tunnus 3474730-5 · www.laplandlkv.com<br><em style="color:var(--warm);">Real Estate with Heart</em></p>
+    </div>
+  </div>
+  <div class="fstrip"></div><div class="pnum">5 / 5</div>
+</div>
+
+<script>
+const AGENTS = {
+  tanja:{name:'Tanja Sotka',title:'Kiinteistönvälittäjä LKV, perustaja',phone:'+358 45 2744 184',email:'tanja@laplandlkv.com'},
+  juha: {name:'Juha Komulainen',title:'Asuntomyyjä, partner',phone:'+358 40 528 0135',email:'juha@laplandlkv.com'},
+  saku: {name:'Saku Häkkinen',title:'Kiinteistönvälittäjä LKV, partner',phone:'+358 40 860 1011',email:'saku@laplandlkv.com'}
+};
+
+function avatar(a, sz) {
+  // Käytä kuvaa jos saatavilla, muuten monogrammi
+  const initials = a.name.split(' ').map(n=>n[0]).join('');
+  const colors = {tanja:'#8fa1b9,#3E547F', juha:'#d4aeb8,#8a5a5a', saku:'#cc8a7f,#6b3a34'};
+  const key = Object.keys(AGENTS).find(k => AGENTS[k] === a) || 'tanja';
+  if (window.PHOTOS && window.PHOTOS[key]) {
+    return `<img src="${window.PHOTOS[key]}" style="width:${sz}px;height:${sz}px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid #A9B7D4;flex-shrink:0;">`;
+  }
+  return `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:linear-gradient(135deg,${colors[key]});display:flex;align-items:center;justify-content:center;color:white;font-size:${sz/2.8}px;font-weight:700;flex-shrink:0;border:2px solid #A9B7D4;">${initials}</div>`;
+}
+
+function selectAgent(key) {
+  const a = AGENTS[key];
+  // Kansilehti
+  document.getElementById('cover-agent').innerHTML = avatar(a,50) +
+    `<div><div style="font-size:13px;font-weight:600;color:#2d3f5e">${a.name}</div>
+    <div style="font-size:10px;color:#888;margin-top:1px">${a.title}</div>
+    <div style="font-size:11px;color:#555;margin-top:4px;line-height:1.6">${a.phone}<br>${a.email}<br>www.laplandlkv.com</div></div>`;
+  // Sivu 4
+  document.getElementById('agent-big').innerHTML = avatar(a,68) +
+    `<div><div class="abn">${a.name}</div><div class="abt">${a.title}</div>
+    <div class="abcc">${a.phone}<br>${a.email}<br>www.laplandlkv.com</div></div>`;
+  // Sivu 5
+  const fi = document.getElementById('fi-agent');
+  if (fi) fi.value = `${a.name} · ${a.phone} · ${a.email}`;
+  document.getElementById('agent-select').value = key;
+}
+
+function toggleTag(el) {
+  el.classList.toggle('active');
+}
+
+function haeHinnoittelu() {
+  try {
+    const d = localStorage.getItem('lapland_arvio');
+    if (d) { taytetaData(JSON.parse(d)); return; }
+  } catch(e) {}
+  const w = window.open('https://tanjalapland.github.io/hinnoitteluapu/', 'hinnoittelu', 'width=1000,height=750');
+  window.addEventListener('message', function h(e) {
+    if (e.data && e.data.type === 'lapland_arvio') {
+      taytetaData(e.data);
+      window.removeEventListener('message', h);
+      if (w) w.close();
+    }
+  });
+  alert('Hinnoittelutyökalu avautuu uuteen ikkunaan.\n\nTee arvio siellä ja paina "📄 Siirrä välitystarjoukseen" -nappia.');
+}
+
+function taytetaData(d) {
+  if (d.hinta) document.getElementById('f-hinta').value = d.hinta;
+  if (d.haarukka) document.getElementById('f-haarukka').value = d.haarukka;
+  if (d.eurm2) document.getElementById('f-eurm2').value = d.eurm2;
+  if (d.alue) document.getElementById('f-alue').value = d.alue;
+  if (d.vertailu) document.getElementById('f-vertailu').value = d.vertailu;
+  if (d.hinta) document.getElementById('f-pyynto').value = d.hinta;
+
+  // Näytä analyysikortti
+  if (d.analyysi || d.kunto || d.koko) {
+    const kortti = document.getElementById('analyysi-kortti');
+    if (kortti) {
+      kortti.style.display = 'block';
+      if (d.koko) document.getElementById('a-koko').textContent = d.koko + (d.kohdetyyppi ? ' · ' + d.kohdetyyppi : '');
+      if (d.kunto) document.getElementById('a-kunto').textContent = d.kunto;
+      if (d.sijainti) document.getElementById('a-sijainti').textContent = d.sijainti;
+      if (d.kohde_eurm2) document.getElementById('a-eurm2-kohde').textContent = d.kohde_eurm2;
+      if (d.trendi) document.getElementById('a-trendi').textContent = d.trendi;
+      if (d.analyysi) document.getElementById('a-analyysi-teksti').textContent = d.analyysi;
+      if (d.nostaa || d.laskee) {
+        const tekijat = document.getElementById('a-tekijat');
+        if (tekijat) {
+          tekijat.style.display = 'grid';
+          if (d.nostaa) document.getElementById('a-nostaa').textContent = d.nostaa;
+          else document.getElementById('a-nostaa').parentElement.style.display = 'none';
+          if (d.laskee) document.getElementById('a-laskee').textContent = d.laskee;
+          else document.getElementById('a-laskee').parentElement.style.display = 'none';
+        }
+      }
+    }
+  }
+
+  // Päivitä mediaani-kenttä
+  if (d.eurm2) document.getElementById('f-mediaani').value = d.eurm2;
+
+  document.getElementById('data-hint').style.display = 'none';
+}
+
+// Auto-resize textareas
+document.querySelectorAll('textarea').forEach(ta => {
+  ta.addEventListener('input', () => { ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; });
+  setTimeout(() => { ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; }, 100);
+});
+
+// Synkronoi osoite sivulle 5
+document.getElementById('f-osoite').addEventListener('input', function() {
+  const o2 = document.getElementById('f-osoite2');
+  if (o2) o2.value = this.value;
+});
+
+// Päivämäärä
+const d = new Date();
+document.getElementById('pvm').value = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
+
+selectAgent('tanja');
+</script>
+</body>
+</html>
