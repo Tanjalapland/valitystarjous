@@ -520,6 +520,14 @@ function taytetaData(d) {
   // Päivitä mediaani-kenttä
   if (d.eurm2) document.getElementById('f-mediaani').value = d.eurm2;
 
+  // Rakennusoikeus — näkyy jos kyseessä tontti
+  if (d.rakennusoikeus) {
+    // Lisää rakennusoikeustieto kommenttikentän pohjaksi
+    const cbox = document.querySelector('.cbox textarea');
+    if (cbox && !cbox.value) {
+      cbox.value = `Rakennusoikeus: ${d.rakennusoikeus} kem²`;
+    }
+  }
   document.getElementById('data-hint').style.display = 'none';
 }
 
